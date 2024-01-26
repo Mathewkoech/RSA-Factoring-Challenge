@@ -5,23 +5,34 @@ import time
 
 def factorize(num):
     """
-    Takes number as input
-    Args: 
-        num: input integer
-    Return: 
-        Tuple with two factors if not prime
-        None if prime
+    Takes a number as input and returns a factorization if possible.
+
+    Args:
+        num (int): Input integer to be factorized.
+
+    Returns:
+        str: Factorization in the format 'n=p*q' or an empty string if prime.
     """
-    for i in range(2, int(num**0.5)+1):
+    for i in range(2, int(num**0.5) + 1):
         quotient, remainder = divmod(num, i)
         if remainder == 0:
-            return i, quotient
-    return None
+            return f"{num}={i}*{quotient}"
 
-def process_file(input_file):
+    return ""
+
+def read_lines_from_file(file_path):
+    """
+    Reads lines from a file and returns a list of lines.
+
+    Args:
+        file_path (str): Path to the input file.
+
+    Returns:
+        list: List of lines read from the file.
+    """
     try:
-        with open(input_file, 'r') as f:
-            return f.readlines()
+        with open(file_path, 'r') as f:
+            return f.read().splitlines()
     except FileNotFoundError:
         print("File not found")
         return []
@@ -31,9 +42,9 @@ def main():
         print("Usage: factors <file>")
         sys.exit(1)
 
-    input_file = sys.argv[1]
-    lines = process_file(input_file)
-    
+    input_file_path = sys.argv[1]
+    lines = read_lines_from_file(input_file_path)
+
     if not lines:
         sys.exit(1)
 
@@ -42,12 +53,10 @@ def main():
     for line in lines:
         try:
             num = int(line.strip())
-            factors = factorize(num)
+            factorization = factorize(num)
 
-            if factors:
-                # Sort factors before printing
-                sorted_factors = sorted(factors)
-                print(f"{num}={sorted_factors[0]}*{sorted_factors[1]}")
+            if factorization:
+                print(factorization)
 
             if time.time() - start_time > 5:
                 print("Time limit exceeded")
