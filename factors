@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+
+import sys
+import time
+
+
+def factorize(num):
+
+    """
+
+    Find factors of a number.
+
+    Args:
+        num (int): Input integer.
+
+    Returns:
+        Tuple[int, int]: Two factors of the input number
+    if it's not prime, otherwise None.
+    """
+    for i in range(2, int(num**0.5)+1):
+        if num % i == 0:
+            return i, num // i
+    return None
+
+
+def read_line_from_file(file_name):
+
+    """
+
+     Read lines from a file.
+
+     Args:
+        file_name (str): name of input file.
+
+     Returns:
+        List[str]: List of lines read from the file.
+     """
+
+    try:
+        with open(file_name, 'r') as file:
+            return file.readlines()
+    except FileNotFoundError:
+        print(f"File not found: {file_name}")
+        return []
+
+
+def main():
+
+    if len(sys.argv) != 2:
+        print("Usage: factors <file>")
+        sys.exit(1)
+
+    input_file_name = sys.argv[1]
+    lines = read_line_from_file(input_file_name)
+
+    if not lines:
+        sys.exit(1)
+
+    start_time = time.time()
+
+    for line in lines:
+        try:
+            num = int(line.strip())
+            factors = factorize(num)
+
+            if factors:
+                factor1, factor2 = sorted(factors)
+                print(f"{num} = {factor1} * {factor2}")
+
+            if time.time() - start_time > 5:
+                print("Time limit exceeded")
+                break
+        except ValueError:
+            print(f"Invalid number on input file: {line.strip()}")
+
+
+if __name__ == '__main__':
+    main()
