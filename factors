@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 
 import sys
+import time
+
 
 def factorize(num):
     """
     Takes number as input
-    Args: 
+    Args:
         num: input integer
-    Return: 
-        Tuple with two factors
+    Return:
+        Tuple with two factors if not prime
         None if prime
     """
     for i in range(2, int(num**0.5)+1):
         if num % i == 0:
             return (i, num // i)
     return None
+
 
 def read_file(file_name):
     try:
@@ -24,6 +27,7 @@ def read_file(file_name):
         print("File not found")
         return []
 
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: factors <file>")
@@ -31,9 +35,11 @@ def main():
 
     file_name = sys.argv[1]
     lines = read_file(file_name)
-    
+
     if not lines:
         sys.exit(1)
+
+    start_time = time.time()
 
     for line in lines:
         try:
@@ -44,8 +50,12 @@ def main():
                 sorted_factors = sorted(factors)
                 print(f"{num}={sorted_factors[0]}*{sorted_factors[1]}")
 
+            if time.time() - start_time > 5:
+                print("Time limit exceeded")
+                break
         except ValueError:
             print("Invalid number on input file")
+
 
 if __name__ == '__main__':
     main()
