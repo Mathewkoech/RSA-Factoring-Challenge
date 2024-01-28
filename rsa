@@ -1,23 +1,19 @@
-#!/usr/bin/python3
-
 import sys
 from typing import Tuple
 
 
-def common_divisor(a: int, b: int) -> int:
-    """Calculate the GCD two integers."""
+def calculate_gcd(a: int, b: int) -> int:
+    """Calculate the greatest common divisor of two integers."""
     while b:
         a, b = b, a % b
     return a
 
 
-def factorize_using_pollards_rho(n: int) -> Tuple[int, int]:
+def pollards_rho_factorization(n: int) -> Tuple[int, int]:
     """
     Apply Pollard's rho algorithm to factorize a given integer.
-
     Args:
         n (int): The integer to be factorized.
-
     Returns:
         Tuple[int, int]: A tuple containing two factors of the input integer.
     """
@@ -30,31 +26,28 @@ def factorize_using_pollards_rho(n: int) -> Tuple[int, int]:
     while d == 1:
         x = f(x)
         y = f(f(y))
-        d = common_divisor(abs(x - y), n)
+        d = calculate_gcd(abs(x - y), n)
 
     return d, n // d
 
 
-def factorize(num: int) -> Tuple[int, int]:
+def factorize_number(number: int) -> Tuple[int, int]:
     """
     Factorize a given integer into two smaller integers.
-
     Args:
         number (int): The integer to be factorized.
-
     Returns:
         Tuple[int, int]: A tuple containing two factors of the input integer.
     """
-    if num <= 1:
-        return num, 1
+    if number <= 1:
+        return number, 1
     else:
-        return factorize_using_pollards_rho(num)
+        return pollards_rho_factorization(number)
 
 
 def main(filename: str) -> None:
     """
     Main function to read numbers from a file and print their factorizations.
-
     Parameters:
         filename (str): The name of the file containing natural
         numbers to factor.
@@ -62,13 +55,17 @@ def main(filename: str) -> None:
     try:
         with open(filename, "r") as file:
             for line in file:
-                current_num = int(line.strip())
-                factor1, factor2 = factorize(current_num)
-                print(f"{current_num}={factor1}*{factor2}")
+                current_number = int(line.strip())
+                factor1, factor2 = factorize_number(current_number)
+                print(f"{current_number}={factor1}*{factor2}")
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
-    except ValueError as e:
-        print(f"Error: {e}")
+    except ValueError:
+        print(
+            "Error: Invalid content in the file. "
+            + "Please ensure all lines contain valid natural "
+            + "numbers greater than 1."
+        )
 
 
 if __name__ == "__main__":
