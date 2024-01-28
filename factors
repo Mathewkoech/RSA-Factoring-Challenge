@@ -1,38 +1,25 @@
 #!/usr/bin/python3
 
 import sys
-import time
 
 def factorize(num):
     """
-    Takes a number as input and returns a factorization if possible.
-
-    Args:
-        num (int): Input integer to be factorized.
-
-    Returns:
-        str: Factorization in the format 'n=p*q' or an empty string if prime.
+    Takes number as input
+    Args: 
+        num: input integer
+    Return: 
+        Tuple with two factors
+        None if prime
     """
-    for i in range(2, int(num**0.5) + 1):
-        quotient, remainder = divmod(num, i)
-        if remainder == 0:
-            return f"{num}={i}*{quotient}"
+    for i in range(2, int(num**0.5)+1):
+        if num % i == 0:
+            return (i, num // i)
+    return None
 
-    return ""
-
-def read_lines_from_file(file_path):
-    """
-    Reads lines from a file and returns a list of lines.
-
-    Args:
-        file_path (str): Path to the input file.
-
-    Returns:
-        list: List of lines read from the file.
-    """
+def read_file(file_name):
     try:
-        with open(file_path, 'r') as f:
-            return f.read().splitlines()
+        with open(file_name, 'r') as f:
+            return f.readlines()
     except FileNotFoundError:
         print("File not found")
         return []
@@ -42,25 +29,21 @@ def main():
         print("Usage: factors <file>")
         sys.exit(1)
 
-    input_file_path = sys.argv[1]
-    lines = read_lines_from_file(input_file_path)
-
+    file_name = sys.argv[1]
+    lines = read_file(file_name)
+    
     if not lines:
         sys.exit(1)
-
-    start_time = time.time()
 
     for line in lines:
         try:
             num = int(line.strip())
-            factorization = factorize(num)
+            factors = factorize(num)
 
-            if factorization:
-                print(factorization)
+            if factors:
+                sorted_factors = sorted(factors)
+                print(f"{num}={sorted_factors[0]}*{sorted_factors[1]}")
 
-            if time.time() - start_time > 5:
-                print("Time limit exceeded")
-                break
         except ValueError:
             print("Invalid number on input file")
 

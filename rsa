@@ -4,14 +4,14 @@ import sys
 from typing import Tuple
 
 
-def calculate_gcd(a: int, b: int) -> int:
-    """Calculate the greatest common divisor of two integers."""
+def common_divisor(a: int, b: int) -> int:
+    """Calculate the GCD two integers."""
     while b:
         a, b = b, a % b
     return a
 
 
-def pollards_rho_factorization(n: int) -> Tuple[int, int]:
+def factorize_using_pollards_rho(n: int) -> Tuple[int, int]:
     """
     Apply Pollard's rho algorithm to factorize a given integer.
 
@@ -30,12 +30,12 @@ def pollards_rho_factorization(n: int) -> Tuple[int, int]:
     while d == 1:
         x = f(x)
         y = f(f(y))
-        d = calculate_gcd(abs(x - y), n)
+        d = common_divisor(abs(x - y), n)
 
     return d, n // d
 
 
-def factorize_number(number: int) -> Tuple[int, int]:
+def factorize(num: int) -> Tuple[int, int]:
     """
     Factorize a given integer into two smaller integers.
 
@@ -45,10 +45,10 @@ def factorize_number(number: int) -> Tuple[int, int]:
     Returns:
         Tuple[int, int]: A tuple containing two factors of the input integer.
     """
-    if number <= 1:
-        return number, 1
+    if num <= 1:
+        return num, 1
     else:
-        return pollards_rho_factorization(number)
+        return factorize_using_pollards_rho(num)
 
 
 def main(filename: str) -> None:
@@ -62,17 +62,13 @@ def main(filename: str) -> None:
     try:
         with open(filename, "r") as file:
             for line in file:
-                current_number = int(line.strip())
-                factor1, factor2 = factorize_number(current_number)
-                print(f"{current_number}={factor1}*{factor2}")
+                current_num = int(line.strip())
+                factor1, factor2 = factorize(current_num)
+                print(f"{current_num}={factor1}*{factor2}")
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
-    except ValueError:
-        print(
-            "Error: Invalid content in the file. "
-            + "Please ensure all lines contain valid natural "
-            + "numbers greater than 1."
-        )
+    except ValueError as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
